@@ -100,9 +100,6 @@ public class Settings
     /// </summary>
     public bool IsCompletionRemoveUnderscoresEnabled { get; set; } = true;
 
-    /// NEW
-    public bool EnableTiledVae { get; set; } = false;
-
     /// <summary>
     /// Format for Inference output image file names
     /// </summary>
