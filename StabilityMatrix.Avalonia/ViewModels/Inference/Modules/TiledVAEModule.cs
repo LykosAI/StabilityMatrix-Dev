@@ -6,17 +6,17 @@ using StabilityMatrix.Core.Attributes;
 using StabilityMatrix.Core.Models.Api.Comfy.Nodes;
 using NLog;
 
-
 namespace StabilityMatrix.Avalonia.ViewModels.Inference.Modules;
 
 [ManagedService]
 [RegisterTransient<TiledVAEModule>]
 public class TiledVAEModule : ModuleBase
 {
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
     public TiledVAEModule(IServiceManager<ViewModelBase> vmFactory)
         : base(vmFactory)
     {
-        this.logger = logger;
         Title = "Tiled VAE Decode";
         AddCards(vmFactory.Get<TiledVAECardViewModel>());
     }
@@ -36,11 +36,8 @@ public class TiledVAEModule : ModuleBase
             var latent = builder.Connections.Primary.AsT0;
             var vae = builder.Connections.GetDefaultVAE();
 
-            logger.LogDebug("TiledVAE: Injecting TiledVAEDecode");
-            logger.LogDebug(
-                "UseCustomTemporalTiling value at runtime: {value}",
-                card.UseCustomTemporalTiling
-            );
+            logger.Debug("TiledVAE: Injecting TiledVAEDecode");
+            logger.Debug("UseCustomTemporalTiling value at runtime: {value}", card.UseCustomTemporalTiling);
 
             var node = builder.Nodes.AddTypedNode(
                 new ComfyNodeBuilder.TiledVAEDecode
