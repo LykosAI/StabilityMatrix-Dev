@@ -52,9 +52,16 @@
                         </Grid>
 
                         <!-- Enable Temporal Tiling -->
-                        <ToggleSwitch
-                            Header="Enable Temporal Tiling"
-                            IsChecked="{Binding UseCustomTemporalTiling}" />
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="Enable Temporal Tiling" />
+                            <ToggleSwitch
+                                Grid.Column="1"
+                                IsChecked="{Binding UseCustomTemporalTiling}" />
+                        </Grid>
+
 
                         <!-- Temporal Controls (Visible only when enabled) -->
                         <StackPanel IsVisible="{Binding UseCustomTemporalTiling}" Spacing="8">
