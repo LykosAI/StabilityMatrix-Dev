@@ -1,0 +1,47 @@
+name: Build Stability Matrix (Windows)
+
+on:
+  push:
+    branches: [ "clean-main" ]
+  pull_request:
+    branches: [ "clean-main" ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK 9.x
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore Avalonia project
+      run: dotnet restore StabilityMatrix.Avalonia/StabilityMatrix.Avalonia.csproj
+
+    - name: Restore Tests project
+      run: dotnet restore StabilityMatrix.Tests/StabilityMatrix.Tests.csproj
+
+    - name: Build Avalonia project
+      run: dotnet build StabilityMatrix.Avalonia/StabilityMatrix.Avalonia.csproj -c Release --no-restore --no-cache
+
+    - name: Build Tests project
+      run: dotnet build StabilityMatrix.Tests/StabilityMatrix.Tests.csproj -c Release --no-restore
+
+    - name: Run Tests
+      run: dotnet test StabilityMatrix.Tests/StabilityMatrix.Tests.csproj -c Release --no-build
+
+    - name: Publish Avalonia app (win10-x64)
+      run: dotnet publish StabilityMatrix.Avalonia/StabilityMatrix.Avalonia.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o ./publish/win10-x64
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: StabilityMatrix-win10-x64
+        path: ./publish/win10-x64/*
+        compression-level: 6
+        retention-days: 14
